@@ -5,59 +5,54 @@
 void updateCabine() {
 
   // PLAY REPONDEUR
-  if (phoneOn && !repondeur.isPlaying())
+  if (!phoneOn && !tone.isPlaying()) {
+    tone.play();
+  } 
+
+  if (phoneNum.equals(cohenNum) || phoneNum.length() > 9) {
+    tone.pause();
     repondeur.play();
-  else if (!phoneOn && repondeur.isPlaying()) {
+    recordMessage("leMessage");
+  } 
+
+  if (phoneOn) {
     repondeur.pause();
     repondeur.rewind();
+    tone.pause();
+    tone.rewind();
+    phoneNum = "";
   }
+}
 
-  //
-  if (phoneOn) {
-    switch (note[0]) {
-    case 73 : 
-      tag = "sexe";
-      repondeur.pause();
-      repondeur.rewind();
-      break;
-    case 74 : 
-      tag = "voix";
-      break;
-    case 75 : 
-      tag = "poesie";
-      break;
-    case 76 : 
-      tag = "charme";
-      break;
-    case 77 : 
-      tag = "podcast";
-      break;
-    }
+void playBouton(int note) {
+  int _offset = 47;
+  if (note > _offset && note < 59) {
+    bouton[note-_offset].rewind();
+    bouton[note-_offset].play();
+    phoneNum += note - _offset - 1;
+    println(phoneNum);
   }
-  recordMessage("wow");
 }
 
 //////////////////////////////////
 //FILE RECORDER
 //////////////////////////////////
-
-
-int counter = 0;
 void recordMessage(String fileName) {
   File f, newF;
 
   f = new File(sketchPath() + "/message.wav");
-  newF = new File(sketchPath() + "/messages/" + tag + '/' + "message" + counter +".wav");
+  newF = new File(sketchPath() + "/messages/" + tag + '/' + fileNum + "_message.wav");
 
-  //if (newNote && note[0] == 48)
-  if (repondeur.position() > 9500)
+  if ((repondeur.position() > repondeur.length() - 200) && !message.isRecording()) {
+  //if (!phoneOn && !message.isRecording()) {
     message.beginRecord();
-  else if (message.isRecording()) {
+  } else if (message.isRecording() && phoneOn) {
     message.endRecord();
     message.save();
     f.renameTo(newF);
     message = minim.createRecorder(in, "message.wav");
-    counter++;
+    fileNum++;
+    phoneNum = "";
     //message.
   }
 }

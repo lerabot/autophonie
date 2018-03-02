@@ -10,7 +10,8 @@ void renderGUI() {
   text("recording -> " + message.isRecording(), 20, 3 * _l);
   text("current note-> " +note[0], 20, 4 * _l);
   text("repondeur pos-> " +repondeur.position(), 20, 5 * _l);
-  text("audio level-> " +mic, 20, 6 * _l);
+  //text("audio level-> " +mic, 20, 6 * _l);
+  //text("knob Left ->" +
   
   // draw the waveforms so we can see what we are monitoring
   pushMatrix();
