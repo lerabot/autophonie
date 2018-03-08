@@ -5,20 +5,25 @@ import themidibus.*;
 import javax.sound.sampled.*;
 
 /////MIDI//////
-MidiBus cabine;
-//MidiBus voiture;
+MidiBus cabine_midi;
+MidiBus voiture_midi;
+MidiBus fl_midi;
 
-////SOUND FILES//////
+////MINIM//////
 Minim minim;
 Mixer.Info[] mixerInfo;
 AudioOutput station;
 AudioOutput voiture;
 AudioPlayer repondeur;
 AudioPlayer tone;
-AudioPlayer bouton[];
+AudioSample[] bouton;
 AudioInput in;
 AudioRecorder message;
+//FILES///////////////////
+int fileNum = 0;
+File dir;
 
+//NOTES//////////////////////
 int[] note = {0, 0};
 boolean newNote;
 boolean phoneOn = true;
@@ -26,7 +31,10 @@ String tag = "none";
 int mic = 0;
 String phoneNum = "";
 String cohenNum = "5149990212";
-int fileNum = 0;
+
+
+int knobLeft;
+int knobRight;
 
 
 static final int telephone = 72;
@@ -35,23 +43,26 @@ void setup() {
   size(500, 500);
   //MIDI//////////////////
   MidiBus.list();
-  cabine = new MidiBus(this, 0, -1);
+  cabine_midi = new MidiBus(this, 0, -1); //INPUT
+  voiture_midi = new MidiBus(this, 1, -1); //INPUT
+  fl_midi = new MidiBus(this, 0, 1); //OUTPUT
   //FILES///////////////////
-  File folder = new File(sketchPath() + "/messages/none/");
-  println("Saving in " + folder);
-  fileNum = folder.listFiles().length + 1;
+  dir = new File(sketchPath() + "/messages/none/");
+  println("Saving in " + dir);
+  fileNum = dir.listFiles().length;
   //AUDIO/////////////////
   minim = new Minim(this);
   mixerInfo = AudioSystem.getMixerInfo();
-  println(mixerInfo);
+  //println(mixerInfo);
   in = minim.getLineIn();
+  voiture = minim.getLineOut();
   
   tone = minim.loadFile("16_Tonalite.wav");
   repondeur = minim.loadFile("13_Accueil_V2.wav");
   message = minim.createRecorder(in, "message.wav");
-  bouton = new AudioPlayer[12];
+  bouton = new AudioSample[12];
   for (int i = 1; i < 13; i++) {
-    bouton[i-1] = minim.loadFile(i + "_dial.wav");
+    bouton[i-1] = minim.loadSample(i + "_dial.wav", 512);
   }
   //VOITURE
   initVoiture();
@@ -79,6 +90,9 @@ void noteOn(int channel, int pitch, int velocity) {
     newNote = false;
 
   playBouton(pitch);
+
+  if (newNote)
+    playMessage(pitch);
 }
 
 void noteOff(int channel, int pitch, int velocity) {
@@ -88,6 +102,12 @@ void noteOff(int channel, int pitch, int velocity) {
 }
 
 void controllerChange(int channel, int number, int value) {
-  if (number == 0)
-    mic = value;
+  switch(number) {
+  case 6:
+    knobLeft = value;
+    break;
+  case 7:
+    knobRight = value;
+    break;
+  }
 }

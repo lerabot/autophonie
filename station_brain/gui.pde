@@ -11,7 +11,8 @@ void renderGUI() {
   text("current note-> " +note[0], 20, 4 * _l);
   text("repondeur pos-> " +repondeur.position(), 20, 5 * _l);
   //text("audio level-> " +mic, 20, 6 * _l);
-  //text("knob Left ->" +
+  text("knob Left ->" + knobLeft, 20, 6 * _l);
+  text("knob Right ->" + knobRight, width/2, 6 * _l);
   
   // draw the waveforms so we can see what we are monitoring
   pushMatrix();

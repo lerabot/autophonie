@@ -27,8 +27,8 @@ void updateCabine() {
 void playBouton(int note) {
   int _offset = 47;
   if (note > _offset && note < 59) {
-    bouton[note-_offset].rewind();
-    bouton[note-_offset].play();
+    //bouton[note-_offset].rewind();
+    bouton[note-_offset].trigger();
     phoneNum += note - _offset - 1;
     println(phoneNum);
   }
@@ -41,10 +41,10 @@ void recordMessage(String fileName) {
   File f, newF;
 
   f = new File(sketchPath() + "/message.wav");
-  newF = new File(sketchPath() + "/messages/" + tag + '/' + fileNum + "_message.wav");
+  newF = new File(dir.toString() + fileNum + "_message.wav");
 
   if ((repondeur.position() > repondeur.length() - 200) && !message.isRecording()) {
-  //if (!phoneOn && !message.isRecording()) {
+    //if (!phoneOn && !message.isRecording()) {
     message.beginRecord();
   } else if (message.isRecording() && phoneOn) {
     message.endRecord();
