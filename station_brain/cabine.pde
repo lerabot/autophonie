@@ -76,7 +76,7 @@ void closeMessage() {
   message.endRecord();
   message.save();
   f.renameTo(newF);
-  message = minim.createRecorder(in, "message.wav");
+  message = minim[0].createRecorder(in, "message.wav");
   fileNum++;
   phoneNum = "";
 }
@@ -88,5 +88,5 @@ void deleteMessage() {
   message.endRecord();
   message.save();
   f.delete();
-  message = minim.createRecorder(in, "message.wav");
+  message = minim[0].createRecorder(in, "message.wav");
 }

@@ -11,15 +11,16 @@ MidiBus voiture_midi;
 MidiBus fl_midi;
 
 ////MINIM//////
-Minim minim;
+Minim[] minim; // 0 = cabine, 1 = voiture
 Mixer.Info[] mixerInfo;
-AudioOutput station;
-AudioOutput voiture;
+AudioInput in; //cabine
+AudioOutput station; //cabine
+AudioOutput voiture; //voiture
 AudioPlayer repondeur;
 AudioPlayer tropLong;
-AudioPlayer tone;
+AudioPlayer tone; 
 AudioSample[] bouton;
-AudioInput in;
+
 AudioRecorder message;
 //FILES///////////////////
 int fileNum = 0;
@@ -48,19 +49,21 @@ void setup() {
   println("Saving in " + dir);
   fileNum = dir.listFiles().length;
   //AUDIO/////////////////
-  minim = new Minim(this);
-  //mixerInfo = AudioSystem.getMixerInfo();
-  //println(mixerInfo);
-  in = minim.getLineIn();
-  voiture = minim.getLineOut();
+  minim = new Minim[3];
+  for (int i = 0 ; i < 3; i++)
+    minim[i] = new Minim(this);
+  mixerInfo = AudioSystem.getMixerInfo();
+  println(mixerInfo);
+  in = minim[0].getLineIn();
+  voiture = minim[0].getLineOut();
 
-  tone = minim.loadFile("16_Tonalite.wav");
-  tropLong = minim.loadFile("14_Trop_long.wav");
-  repondeur = minim.loadFile("13_Accueil_V2.wav");
-  message = minim.createRecorder(in, "message.wav");
+  tone = minim[0].loadFile("16_Tonalite.wav");
+  tropLong = minim[0].loadFile("14_Trop_long.wav");
+  repondeur = minim[0].loadFile("13_Accueil_V2.wav");
+  message = minim[0].createRecorder(in, "message.wav");
   bouton = new AudioSample[12];
   for (int i = 1; i < 13; i++) {
-    bouton[i-1] = minim.loadSample(i + "_dial.wav", 512);
+    bouton[i-1] = minim[0].loadSample(i + "_dial.wav", 512);
   }
   //VOITURE
   initVoiture();

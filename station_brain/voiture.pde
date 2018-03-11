@@ -16,10 +16,11 @@ void initVoiture() {
   println(f.length + " files in message folder");
 
   //5 audioPlayer, 1 par bouton.
-  voiture = minim.getLineOut();
+  //minim[1].setOutputMixer()
+  voiture = minim[1].getLineOut();
   for (int i=0; i < 5; i++) {
     int num = floor(random(0, fileNum-1));
-    Vmessage[i] = minim.loadFile(f[num].toString());
+    Vmessage[i] = minim[1].loadFile(f[num].toString());
     delay(25);
   }
   mDelay = second();
@@ -39,7 +40,7 @@ void playMessage(int note) {
       Vmessage[lastMessage].close();
     }
     int num = floor(random(0, fileNum-1));
-    Vmessage[lastMessage] = minim.loadFile(f[num].toString());
+    Vmessage[lastMessage] = minim[1].loadFile(f[num].toString());
 
     /*
     if (num < 8) //CREATION D'ÉLÈVE
